@@ -2,7 +2,7 @@
 
 > Красивый, отзывчивый веб-дашборд для трекинга привычек. Фокус на UI/UX: анимации, микро-взаимодействия, тёмная/светлая темы. Без зависимостей — чистый HTML/CSS/JS.
 
-**🔗 Live demo:** _добавь сюда ссылку на Vercel/GitHub Pages после деплоя_
+**🔗 Live demo:** (https://txltedxgod.github.io/lumi/)_
 
 ![Lumi preview](dashboard-dark.png)
 
