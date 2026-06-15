@@ -4,7 +4,7 @@
 
 **🔗 Live demo:** (https://txltedxgod.github.io/lumi/)_
 
-![Lumi preview](dashboard-dark.png)
+![Lumi preview] (dashboard-dark.png)
 
 ---
 
