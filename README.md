@@ -4,7 +4,7 @@
 
 **🔗 Live demo:** _добавь сюда ссылку на Vercel/GitHub Pages после деплоя_
 
-![Lumi preview](preview.png)
+![Lumi preview](dashboard-dark.png)
 
 ---
 
@@ -12,11 +12,11 @@
 
 | Дашборд — тёмная тема | Дашборд — светлая тема |
 | --- | --- |
-| ![Дашборд тёмная](screenshots/dashboard-dark.png) | ![Дашборд светлая](screenshots/dashboard-light.png) |
+| ![Дашборд тёмная](dashboard-dark.png) | ![Дашборд светлая](dashboard-light.png) |
 
 | Новая привычка | Настройки |
 | --- | --- |
-| ![Новая привычка](screenshots/new-habit.png) | ![Настройки](screenshots/settings.png) |
+| ![Новая привычка](new-habit.png) | ![Настройки](settings.png) |
 
 ---
 
