@@ -53,13 +53,6 @@ open index.html
 python3 -m http.server 8000
 # затем открой http://localhost:8000
 ```
-
-## 📦 Деплой
-
-**Vercel / Netlify:** перетащи папку — статический сайт задеплоится без настройки.
-
-**GitHub Pages:** Settings → Pages → Branch: `main` / root.
-
 ## 📂 Структура
 
 ```
