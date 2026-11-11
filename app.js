@@ -34,7 +34,7 @@
       const o = {};
       for (let i = 39; i >= 0; i--) {
         if (i === 0 && !includeToday) continue;
-        const k = dayKey(Date.now() - i * DAY_MS);
+        const k = daysAgoKey(i);
         if (Math.random() < prob) o[k] = true;
       }
       return o;
@@ -49,13 +49,15 @@
 
   /* ---------- date helpers ---------- */
   function dayKey(ts){ const d = new Date(ts); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+  function daysAgoKey(days){ const d = new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate() - days); return dayKey(d.getTime()); }
   function todayKey(){ return dayKey(Date.now()); }
   function uid(){ return Math.random().toString(36).slice(2,9); }
+  function safeColor(c){ return COLORS.includes(c) ? c : COLORS[0]; }
 
   function streak(h){
     let s = 0;
     for (let i = 0; i < 400; i++){
-      const k = dayKey(Date.now() - i*DAY_MS);
+      const k = daysAgoKey(i);
       if (h.log[k]) s++;
       else if (i === 0) continue; // today not done yet doesn't break streak
       else break;
@@ -71,7 +73,7 @@
     return best;
   }
   function rate(h, days){
-    let done=0; for(let i=0;i<days;i++){ if(h.log[dayKey(Date.now()-i*DAY_MS)]) done++; } return Math.round(done/days*100);
+    let done=0; for(let i=0;i<days;i++){ if(h.log[daysAgoKey(i)]) done++; } return Math.round(done/days*100);
   }
   function totalDone(h){ return Object.values(h.log).filter(Boolean).length; }
 
@@ -133,17 +135,19 @@
     } else {
       html += `<div class="habit-grid">`;
       habits.forEach(h=>{
+        const col = safeColor(h.color);
+        const id = esc(h.id);
         const on = !!h.log[tk]; const st = streak(h); const r30 = rate(h,30);
-        html += `<div class="habit-card ${on?'done':''}" style="--hc:${h.color};--hc-soft:${h.color}22" onclick="Lumi.openDetail('${h.id}')">
+        html += `<div class="habit-card ${on?'done':''}" style="--hc:${col};--hc-soft:${col}22" onclick="Lumi.openDetail('${id}')">
           <div class="habit-top">
             <div class="habit-emoji">${h.emoji}</div>
-            <div class="habit-ring">${ring(r30,h.color,54)}<div class="habit-ring-label">${r30}%</div></div>
+            <div class="habit-ring">${ring(r30,col,54)}<div class="habit-ring-label">${r30}%</div></div>
           </div>
           <div class="habit-name">${esc(h.name)}</div>
           <div class="habit-meta">${ic('cal')} ежедневно</div>
           <div class="habit-foot">
             <div class="streak-chip">🔥 ${st} дн.</div>
-            <button class="check-btn ${on?'on':''}" onclick="event.stopPropagation();Lumi.toggle('${h.id}')">${ic('tick')}</button>
+            <button class="check-btn ${on?'on':''}" onclick="event.stopPropagation();Lumi.toggle('${id}')">${ic('tick')}</button>
           </div>
         </div>`;
       });
@@ -162,8 +166,7 @@
     let cellsHtml = '';
     const total = habits.length || 1;
     for (let i = cells-1; i >= 0; i--){
-      const ts = Date.now() - i*DAY_MS;
-      const k = dayKey(ts);
+      const k = daysAgoKey(i);
       const done = habits.filter(h=>h.log[k]).length;
       const frac = done/total;
       let bg = 'var(--ring-track)';
@@ -194,10 +197,11 @@
     // last 7 weeks bar chart (weekly completion)
     html += `<div class="section"><div class="section-head"><h3>По неделям</h3><span>% выполнения</span></div><div class="heatmap-card"><div class="bars">`;
     for (let w=7; w>=0; w--){
-      let done=0; for(let d=0; d<7; d++){ const k=dayKey(Date.now()-(w*7+d)*DAY_MS); if(h.log[k]) done++; }
+      let done=0; for(let d=0; d<7; d++){ const k=daysAgoKey(w*7+d); if(h.log[k]) done++; }
       const p=Math.round(done/7*100);
       const lbl = w===0?'Сейчас':`-${w}н`;
-      html += `<div class="bar" style="height:${Math.max(p,4)}%;background:linear-gradient(180deg,${h.color},${h.color}99)"><span>${lbl}</span></div>`;
+      const col = safeColor(h.color);
+      html += `<div class="bar" style="height:${Math.max(p,4)}%;background:linear-gradient(180deg,${col},${col}99)"><span>${lbl}</span></div>`;
     }
     html += `</div></div></div>`;
     html += `<div class="section"><button class="btn-ghost" style="width:auto;padding:0 20px" onclick="Lumi.openEdit('${h.id}')">Редактировать привычку</button></div>`;
@@ -218,9 +222,10 @@
     if(!total){ html+='<p style="color:var(--text-2)">Нет данных.</p>'; }
     [...habits].sort((a,b)=>rate(b,30)-rate(a,30)).forEach(h=>{
       const r=rate(h,30);
+      const col=safeColor(h.color);
       html+=`<div style="margin-bottom:16px">
         <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:550;margin-bottom:7px"><span>${h.emoji} ${esc(h.name)}</span><span style="color:var(--text-2)">${r}%</span></div>
-        <div style="height:9px;border-radius:6px;background:var(--ring-track);overflow:hidden"><div style="height:100%;width:${r}%;border-radius:6px;background:linear-gradient(90deg,${h.color},${h.color}aa);transition:width .8s var(--ease)"></div></div>
+        <div style="height:9px;border-radius:6px;background:var(--ring-track);overflow:hidden"><div style="height:100%;width:${r}%;border-radius:6px;background:linear-gradient(90deg,${col},${col}aa);transition:width .8s var(--ease)"></div></div>
       </div>`;
     });
     html += `</div></div>`;
@@ -330,8 +335,11 @@
     saveHabit(){
       const inp=document.getElementById('hName'); const name=inp.value.trim();
       if(!name){ inp.classList.add('err'); document.getElementById('nameErr').classList.add('show'); inp.focus(); return; }
-      if(editingId){ const h=habits.find(x=>x.id===editingId); h.name=name; h.emoji=pick.emoji; h.color=pick.color; toast('Изменения сохранены'); }
-      else { habits.push({id:uid(),name,emoji:pick.emoji,color:pick.color,goal:'daily',created:Date.now(),log:{}}); toast('Привычка добавлена 🌱'); }
+      if(editingId){
+        const h=habits.find(x=>x.id===editingId);
+        if(h){ h.name=name; h.emoji=pick.emoji; h.color=safeColor(pick.color); toast('Изменения сохранены'); }
+      }
+      else { habits.push({id:uid(),name,emoji:pick.emoji,color:safeColor(pick.color),goal:'daily',created:Date.now(),log:{}}); toast('Привычка добавлена 🌱'); }
       save(); this.closeModal();
       if(currentView==='detail') render(); else this.go(currentView==='settings'?'dashboard':currentView);
     },
@@ -339,7 +347,10 @@
     setTheme(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem(LS_THEME,t); updateThemeBtn(); },
     exportData(){
       const blob=new Blob([JSON.stringify(habits,null,2)],{type:'application/json'});
-      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='lumi-habits.json'; a.click(); toast('Данные экспортированы');
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download='lumi-habits.json'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      toast('Данные экспортированы');
     },
     resetData(){ habits=seed(); save(); toast('Демо-данные восстановлены'); this.go('dashboard'); }
   };
