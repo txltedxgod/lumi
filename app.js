@@ -5,7 +5,7 @@
   const LS_THEME = 'lumi.theme';
   const LS_NAME = 'lumi.name';
   const EMOJIS = ['💪','📚','🏃','🧘','💧','🛌','🍎','📝','🎸','🧠','🌅','🧹','💻','🎨','🌱','☕'];
-  const COLORS = ['#7c5cff','#3ddc97','#ff9f43','#ff5a6a','#4dabf7','#f368e0','#feca57','#1dd1a1'];
+  const COLORS = ['#3f3f46','#52525b','#63636e','#71717a','#27272a','#858894'];
   const DAY_MS = 86400000;
 
   /* ---------- state ---------- */
@@ -40,10 +40,10 @@
       return o;
     };
     return [
-      mk('Пить воду', '💧', '#4dabf7', hist(.82, true)),
-      mk('Читать 30 мин', '📚', '#7c5cff', hist(.6, false)),
-      mk('Тренировка', '💪', '#3ddc97', hist(.5, false)),
-      mk('Медитация', '🧘', '#ff9f43', hist(.7, true)),
+      mk('Пить воду', '💧', COLORS[0], hist(.82, true)),
+      mk('Читать 30 мин', '📚', COLORS[1], hist(.6, false)),
+      mk('Тренировка', '💪', COLORS[2], hist(.5, false)),
+      mk('Медитация', '🧘', COLORS[3], hist(.7, true)),
     ];
   }
 
@@ -201,7 +201,7 @@
       const p=Math.round(done/7*100);
       const lbl = w===0?'Сейчас':`-${w}н`;
       const col = safeColor(h.color);
-      html += `<div class="bar" style="height:${Math.max(p,4)}%;background:linear-gradient(180deg,${col},${col}99)"><span>${lbl}</span></div>`;
+      html += `<div class="bar" style="height:${Math.max(p,4)}%;background:${col}"><span>${lbl}</span></div>`;
     }
     html += `</div></div></div>`;
     html += `<div class="section"><button class="btn-ghost" style="width:auto;padding:0 20px" onclick="Lumi.openEdit('${h.id}')">Редактировать привычку</button></div>`;
@@ -225,7 +225,7 @@
       const col=safeColor(h.color);
       html+=`<div style="margin-bottom:16px">
         <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:550;margin-bottom:7px"><span>${h.emoji} ${esc(h.name)}</span><span style="color:var(--text-2)">${r}%</span></div>
-        <div style="height:9px;border-radius:6px;background:var(--ring-track);overflow:hidden"><div style="height:100%;width:${r}%;border-radius:6px;background:linear-gradient(90deg,${col},${col}aa);transition:width .8s var(--ease)"></div></div>
+        <div style="height:9px;border-radius:6px;background:var(--ring-track);overflow:hidden"><div style="height:100%;width:${r}%;border-radius:6px;background:${col};transition:width .8s var(--ease)"></div></div>
       </div>`;
     });
     html += `</div></div>`;
